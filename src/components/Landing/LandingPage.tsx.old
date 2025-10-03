@@ -1,0 +1,987 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { FiArrowUpRight, FiArrowLeft, FiArrowRight, FiPlay, FiMenu, FiX, FiDollarSign, FiTrendingUp, FiBarChart, FiCheckCircle, FiSearch } from 'react-icons/fi'
+import LoginModal from '../Auth/LoginModal'
+import LoadingScreen from '../Auth/LoadingScreen'
+import { authService } from '@/services/auth'
+import { useRouter } from 'next/navigation'
+
+export default function LandingPage() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isLoadingScreenVisible, setIsLoadingScreenVisible] = useState(false)
+  const [selectedFormat, setSelectedFormat] = useState('Finance')
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [progressPercentage, setProgressPercentage] = useState(0)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const autoSlideIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const router = useRouter()
+
+  // Sample images for the slider (you can replace with actual image paths)
+  const images = [
+    '/image/logo.png', // Using existing logo as placeholder
+    '/image/logo.png', // You can add more image paths here
+    '/image/logo.png',
+  ]
+
+  const formats = ['Finance', 'Marketing', 'Product Team', 'Consulting', 'Research']
+
+  // Scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      setIsScrolled(scrollPosition > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Check for redirect result on page load
+  useEffect(() => {
+    const checkRedirectResult = async () => {
+      try {
+        const user = await authService.checkRedirectResult()
+        if (user) {
+          console.log('User signed in via redirect:', user)
+          setIsLoadingScreenVisible(true)
+          // Add delay and redirect to chat
+          await new Promise(resolve => setTimeout(resolve, 1500))
+          router.push('/chat')
+        }
+      } catch (error) {
+        console.error('Redirect result error:', error)
+      }
+    }
+
+    checkRedirectResult()
+  }, [router])
+
+  // Progress bar and auto-slide effect for cards
+  useEffect(() => {
+    const startProgressAndAutoSlide = () => {
+      // Clear existing intervals
+      if (autoSlideIntervalRef.current) {
+        clearInterval(autoSlideIntervalRef.current)
+      }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
+
+      // Reset progress
+      setProgressPercentage(0)
+
+      // Progress bar update (every 70ms for smooth animation = 7000ms / 100)
+      let progress = 0
+      progressIntervalRef.current = setInterval(() => {
+        progress += 1
+        setProgressPercentage(progress)
+
+        if (progress >= 100) {
+          clearInterval(progressIntervalRef.current!)
+        }
+      }, 70)
+
+      // Auto slide after 7 seconds
+      autoSlideIntervalRef.current = setTimeout(() => {
+        console.log('Auto-slide triggered')
+
+        // Get current state directly from the ref to avoid stale closure
+        setSelectedFormat((currentFormat) => {
+          const currentIndex = formats.indexOf(currentFormat)
+          const nextIndex = (currentIndex + 1) % formats.length
+          const nextFormat = formats[nextIndex]
+          console.log(`Moving from ${currentFormat} (index: ${currentIndex}) to ${nextFormat} (index: ${nextIndex})`)
+
+          // Move to next card immediately with the correct index
+          setTimeout(() => {
+            const moveCard = () => {
+              if (scrollContainerRef.current) {
+                const container = scrollContainerRef.current.parentElement
+                if (container) {
+                  const cardWidth = window.innerWidth * 0.85 // 85vw per card
+                  const scrollPosition = nextIndex * cardWidth
+
+                  console.log(`Scrolling to position: ${scrollPosition}, cardWidth: ${cardWidth}, nextIndex: ${nextIndex}`)
+
+                  container.scrollTo({
+                    left: scrollPosition,
+                    behavior: 'smooth'
+                  })
+
+                  // Verify scroll position after a delay
+                  setTimeout(() => {
+                    if (Math.abs(container.scrollLeft - scrollPosition) > 10) {
+                      console.log('Scroll failed, retrying...')
+                      container.scrollTo({
+                        left: scrollPosition,
+                        behavior: 'smooth'
+                      })
+                    }
+                  }, 500)
+                } else {
+                  console.error('Container not found')
+                }
+              } else {
+                console.log('ScrollContainerRef not ready yet, skipping')
+              }
+            }
+
+            // Try to move immediately and with delay
+            moveCard()
+            setTimeout(moveCard, 100)
+          }, 50)
+
+          return nextFormat
+        })
+
+        // Reset progress
+        setProgressPercentage(0)
+
+        // Restart the cycle immediately
+        setTimeout(() => startProgressAndAutoSlide(), 200)
+      }, 7000)
+    }
+
+    // Start auto slide only on client side with a delay to ensure DOM is ready
+    if (typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        if (scrollContainerRef.current) {
+          startProgressAndAutoSlide()
+        } else {
+          // Retry after a longer delay if ref is not ready
+          const retryTimer = setTimeout(() => {
+            startProgressAndAutoSlide()
+          }, 500)
+        }
+      }, 100)
+
+      return () => clearTimeout(timer)
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (autoSlideIntervalRef.current) {
+        clearTimeout(autoSlideIntervalRef.current)
+      }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
+    }
+  }, [])
+
+  // Hero section image auto-slide effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+    }, 3000) // Change image every 3 seconds
+
+    return () => clearInterval(interval)
+  }, [images.length])
+
+  const handleGetStartedClick = () => {
+    setIsLoginModalOpen(true)
+  }
+
+  const handleStartLoading = () => {
+    setIsLoadingScreenVisible(!isLoadingScreenVisible)
+  }
+
+  const handlePlayVideo = () => {
+    setIsVideoPlaying(true)
+    // Replace iframe src with autoplay parameter
+    if (iframeRef.current) {
+      iframeRef.current.src = "https://www.youtube.com/embed/UF8uR6Z6KLc?autoplay=1&enablejsapi=1"
+    }
+  }
+
+  const handleFormatClick = (format: string) => {
+    setSelectedFormat(format)
+    const index = formats.indexOf(format)
+
+    // Clear current timers
+    if (autoSlideIntervalRef.current) {
+      clearTimeout(autoSlideIntervalRef.current)
+    }
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current)
+    }
+
+    // Reset progress
+    setProgressPercentage(0)
+
+    // Move to selected card with enhanced reliability
+    const moveToCard = () => {
+      if (scrollContainerRef.current && index !== -1) {
+        const container = scrollContainerRef.current.parentElement
+        if (container) {
+          const cardWidth = window.innerWidth * 0.85 // 85vw per card
+          const scrollPosition = index * cardWidth
+
+          console.log(`Moving to selected card: ${format}, position: ${scrollPosition}`)
+
+          container.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth'
+          })
+
+          // Verify scroll position
+          setTimeout(() => {
+            if (Math.abs(container.scrollLeft - scrollPosition) > 10) {
+              console.log('Initial scroll failed, using auto behavior')
+              container.scrollTo({
+                left: scrollPosition,
+                behavior: 'auto'
+              })
+            }
+          }, 300)
+        }
+      }
+    }
+
+    moveToCard()
+    setTimeout(moveToCard, 50) // Backup attempt
+
+    // Restart the auto-slide cycle from the new position
+    setTimeout(() => {
+      // Progress bar update
+      let progress = 0
+      progressIntervalRef.current = setInterval(() => {
+        progress += 1
+        setProgressPercentage(progress)
+
+        if (progress >= 100) {
+          clearInterval(progressIntervalRef.current!)
+        }
+      }, 70)
+
+      // Auto slide after 7 seconds - restart the continuous cycle
+      autoSlideIntervalRef.current = setTimeout(() => {
+        // Move to next format and reset progress simultaneously
+        const currentIndex = formats.indexOf(format)
+        const nextIndex = (currentIndex + 1) % formats.length
+        const nextFormat = formats[nextIndex]
+
+        // Update format and reset progress in same render
+        setSelectedFormat(nextFormat)
+        setProgressPercentage(0)
+
+        // Force card movement with multiple attempts
+        const moveCard = () => {
+          if (scrollContainerRef.current) {
+            const container = scrollContainerRef.current.parentElement
+            if (container) {
+              const cardWidth = window.innerWidth * 0.85
+              const scrollPosition = nextIndex * cardWidth
+
+              console.log(`Manual scroll to position: ${scrollPosition}, cardWidth: ${cardWidth}, nextIndex: ${nextIndex}`)
+
+              container.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+              })
+
+              // Verify scroll position after a delay
+              setTimeout(() => {
+                if (Math.abs(container.scrollLeft - scrollPosition) > 10) {
+                  console.log('Manual scroll failed, retrying...')
+                  container.scrollTo({
+                    left: scrollPosition,
+                    behavior: 'auto'
+                  })
+                }
+              }, 500)
+            }
+          }
+        }
+
+        // Try to move immediately and with delay
+        moveCard()
+        setTimeout(moveCard, 100)
+
+        // Continue the infinite cycle by restarting the function
+        const startAutoSlide = () => {
+          // Clear existing intervals
+          if (autoSlideIntervalRef.current) {
+            clearTimeout(autoSlideIntervalRef.current)
+          }
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current)
+          }
+
+          // Reset progress
+          setProgressPercentage(0)
+
+          // Progress bar update (every 70ms for smooth animation = 7000ms / 100)
+          let progress = 0
+          progressIntervalRef.current = setInterval(() => {
+            progress += 1
+            setProgressPercentage(progress)
+
+            if (progress >= 100) {
+              clearInterval(progressIntervalRef.current!)
+            }
+          }, 70)
+
+          // Auto slide after 7 seconds
+          autoSlideIntervalRef.current = setTimeout(() => {
+            // Move to next format and reset progress simultaneously
+            const currentIndex = formats.indexOf(selectedFormat)
+            const nextIndex = (currentIndex + 1) % formats.length
+            const nextFormat = formats[nextIndex]
+
+            // Update format and reset progress in same render
+            setSelectedFormat(nextFormat)
+            setProgressPercentage(0)
+
+            // Move to next card
+            if (scrollContainerRef.current) {
+              const container = scrollContainerRef.current.parentElement
+              const cardWidth = window.innerWidth * 0.85
+              const scrollPosition = nextIndex * cardWidth
+
+              if (container) {
+                container.scrollTo({
+                  left: scrollPosition,
+                  behavior: 'smooth'
+                })
+              }
+            }
+
+            // Restart the cycle
+            setTimeout(() => startAutoSlide(), 200)
+          }, 7000)
+        }
+
+        setTimeout(() => startAutoSlide(), 200)
+      }, 7000)
+    }, 300)
+  }
+
+  const handlePrevious = () => {
+    const currentIndex = formats.indexOf(selectedFormat)
+    if (currentIndex > 0) {
+      handleFormatClick(formats[currentIndex - 1])
+    }
+  }
+
+  const handleNext = () => {
+    const currentIndex = formats.indexOf(selectedFormat)
+    if (currentIndex < formats.length - 1) {
+      handleFormatClick(formats[currentIndex + 1])
+    }
+  }
+
+  return (
+    <>
+      <div className={`min-h-screen bg-white relative ${isLoginModalOpen ? 'blur-sm' : ''}`}>
+
+      {/* Toolbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-md' : 'bg-white'}`}>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo - moved inward */}
+            <div className="flex items-center ml-8 sm:ml-10 lg:ml-12">
+              <a href="/" className="flex-shrink-0 flex items-center gap-1">
+                <Image
+                  src="/image/logo.png"
+                  alt="Afterwon Logo"
+                  width={45}
+                  height={45}
+                  className="object-contain"
+                />
+                <span className="text-xl font-bold text-black" style={{fontFamily: 'SpectralLight, serif', fontWeight: 650}}>Afterwon</span>
+              </a>
+            </div>
+
+            {/* Navigation Links - Desktop */}
+            <div className="hidden min-[1000px]:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {/* Use cases dropdown */}
+                <div className="relative group">
+                  <span className="text-black hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1 cursor-pointer" style={{fontFamily: 'Arial, sans-serif', fontWeight: 550}}>
+                    Use cases
+                    <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute top-full left-0 mt-1 w-[28rem] bg-white rounded-lg shadow-xl border border-gray-200 backdrop-blur-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
+                    <div className="py-3">
+                      {formats.map((format) => {
+                        const formatInfo = {
+                          'Finance': {
+                            icon: <FiDollarSign className="w-5 h-5 text-orange-500" />,
+                            description: 'Transform complex financial data into insights'
+                          },
+                          'Marketing': {
+                            icon: <FiTrendingUp className="w-5 h-5 text-orange-500" />,
+                            description: 'Turn campaign data into marketing intelligence'
+                          },
+                          'Product Team': {
+                            icon: <FiBarChart className="w-5 h-5 text-orange-500" />,
+                            description: 'Analyze product metrics and KPIs efficiently'
+                          },
+                          'Consulting': {
+                            icon: <FiCheckCircle className="w-5 h-5 text-orange-500" />,
+                            description: 'Deliver data-driven solutions for clients'
+                          },
+                          'Research': {
+                            icon: <FiSearch className="w-5 h-5 text-orange-500" />,
+                            description: 'Convert research data into visual stories'
+                          }
+                        }
+
+                        return (
+                          <a
+                            key={format}
+                            href={`#${format.toLowerCase().replace(' ', '-')}`}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleFormatClick(format)
+                              // Scroll to the format section
+                              const section = document.getElementById('usecase')
+                              if (section) {
+                                section.scrollIntoView({ behavior: 'smooth' })
+                              }
+                            }}
+                            className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
+                          >
+                            <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                              {formatInfo[format as keyof typeof formatInfo]?.icon}
+                            </div>
+                            <div className="flex-grow">
+                              <div className="font-semibold text-sm text-black mb-1" style={{fontFamily: 'Arial, sans-serif'}}>
+                                {format}
+                              </div>
+                              <div className="text-xs text-gray-600 leading-relaxed whitespace-nowrap" style={{fontFamily: 'Arial, sans-serif'}}>
+                                {formatInfo[format as keyof typeof formatInfo]?.description}
+                              </div>
+                            </div>
+                          </a>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <a href="/careers" className="text-black hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium transition-colors" style={{fontFamily: 'Arial, sans-serif', fontWeight: 550}}>
+                  Careers
+                </a>
+                <a href="#enterprise" className="text-black hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium transition-colors" style={{fontFamily: 'Arial, sans-serif', fontWeight: 550}}>
+                  Enterprise sales
+                </a>
+              </div>
+            </div>
+
+            {/* Desktop Get Started Button */}
+            <div className="hidden min-[1000px]:flex items-center space-x-4 mr-8 sm:mr-10 lg:mr-12">
+              <button
+                onClick={handleGetStartedClick}
+                className="bg-gray-200 hover:bg-gray-300 text-black px-6 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-2 group rounded-full"
+                style={{fontWeight: 550}}
+              >
+                <FiArrowUpRight size={16} className="transition-transform duration-200 group-hover:rotate-45" />
+                Get Started
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="min-[1000px]:hidden flex items-center mr-8 relative z-70">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-black hover:text-gray-600 p-2 transition-colors relative z-70"
+              >
+                {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu - New Design */}
+        {isMobileMenuOpen && (
+          <div className="min-[1000px]:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 z-60 shadow-lg">
+            <div className="px-8 py-6 space-y-4">
+              <a 
+                href="#usecase" 
+                className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
+                style={{fontFamily: 'NunitoSans, sans-serif', fontWeight: 500}}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Use cases
+              </a>
+              <a
+                href="/careers"
+                className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
+                style={{fontFamily: 'Arial, sans-serif', fontWeight: 500}}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Careers
+              </a>
+              <a 
+                href="#enterprise" 
+                className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
+                style={{fontFamily: 'NunitoSans, sans-serif', fontWeight: 500}}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Enterprise sales
+              </a>
+              <button
+                onClick={() => {
+                  handleGetStartedClick();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-black px-6 py-3 text-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 group mt-4 rounded-full"
+              >
+                <FiArrowUpRight size={20} className="transition-transform duration-200 group-hover:rotate-45" />
+                Get Started
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+
+      {/* Hero Section */}
+      <main className="relative z-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 md:pt-40 md:pb-24">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl md:text-7xl font-bold text-black mb-6 leading-tight">
+            <span style={{fontFamily: 'Spectral-ExtraBold, serif'}}>Data Meets </span>
+            <span style={{fontFamily: 'Spectral-ExtraBoldItalic, serif', fontStyle: 'italic'}}>Intelligence</span>
+          </h1>
+          
+          <p className="text-2xl text-black mb-12 max-w-4xl mx-auto leading-relaxed font-medium" style={{fontFamily: 'Arial, sans-serif', fontWeight: 500}}>
+            Upload your data, ask questions, get instant analysis and visualizations
+          </p>
+
+          <div className="flex justify-center gap-4 mb-16">
+            <button
+              onClick={handleGetStartedClick}
+              className="bg-black hover:bg-gray-800 text-white px-6 py-2 text-base font-medium transition-colors duration-200 rounded-full"
+              style={{fontFamily: 'Arial, sans-serif', fontWeight: 500}}
+            >
+              Start Now
+            </button>
+            <button className="text-gray-600 hover:text-black px-6 py-2 text-base font-medium border border-gray-300 hover:border-gray-400 transition-colors duration-200 rounded-full" style={{fontFamily: 'Arial, sans-serif', fontWeight: 500}}>
+              View More
+            </button>
+          </div>
+        </div>
+
+        {/* Image Slider - Full width touching vertical lines */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* Image viewer spanning full width from left line to right line */}
+          <div className="absolute left-0 right-0">
+            <div className="bg-white aspect-[20/10] flex items-center justify-center relative overflow-hidden shadow-lg group">
+              {/* YouTube Video */}
+              <iframe
+                ref={iframeRef}
+                src="https://www.youtube.com/embed/UF8uR6Z6KLc?enablejsapi=1"
+                title="YouTube video player"
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+              
+              {/* Custom Play Button Overlay */}
+              {!isVideoPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50 cursor-pointer">
+                  <button
+                    onClick={handlePlayVideo}
+                    className="w-14 h-14 rounded-full bg-gradient-to-br from-[#cc4400] via-[#ff6600] to-[#cc4400] flex items-center justify-center relative overflow-hidden z-50 cursor-pointer transition-all duration-300 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-all before:duration-700 hover:before:left-full"
+                  >
+                    <FiPlay size={20} className="text-white ml-0.5 relative z-10" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Spacer for proper height */}
+          <div className="aspect-[20/10] opacity-0"></div>
+        </div>
+      </main>
+    </div>
+
+    {/* Company Logos Section */}
+    <section className="bg-white py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center overflow-x-auto">
+          <div className="flex items-center gap-8 md:gap-12 lg:gap-16 min-w-max">
+            {/* Logo placeholders */}
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <Image
+                src="/image/logo1.avif"
+                alt="Logo 1"
+                width={80}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo2</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo3</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo4</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo5</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo6</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo7</span>
+            </div>
+            <div className="flex items-center justify-center w-24 h-12 bg-white rounded">
+              <span className="text-xs text-gray-500 font-medium">logo8</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* File Format Section */}
+    <section id="usecase" className="bg-white py-16 md:py-24 relative">
+      
+      <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+        {/* Data Analytics Hero Section */}
+        <div className="text-center mb-16 md:mb-24">
+          {/* Tool Icons Row */}
+          <div className="flex items-center justify-center gap-8 mb-12">
+            <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shadow-md">
+              <Image
+                src="/image/stripe.png"
+                alt="Stripe"
+                width={50}
+                height={30}
+                className="object-contain"
+              />
+            </div>
+            <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shadow-md">
+              <Image
+                src="/image/word.png"
+                alt="Word"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+            <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shadow-md">
+              <Image
+                src="/image/excel.png"
+                alt="Excel"
+                width={50}
+                height={50}
+                className="object-contain"
+              />
+            </div>
+            <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shadow-md">
+              <Image
+                src="/image/googledrive.png"
+                alt="Google Drive"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+            <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shadow-md">
+              <Image
+                src="/image/meta.svg"
+                alt="Meta"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    {/* Features Grid Section */}
+    <section className="py-16 md:py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {/* Feature 1: Deep Research Integration */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">Research Interface Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              Deep Research Integration
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Native access of Openai Deep Research with contextual understanding of your workbook and verified sources
+            </p>
+          </div>
+
+          {/* Feature 2: Memories */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">Memory System Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              Memories
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Endex will remember your style preferences and favorite workflows
+            </p>
+          </div>
+
+          {/* Feature 3: Powerful Models */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">Model Integration Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              Powerful Models
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Deeply integrated with all major model providers with zero data retention agreements.
+            </p>
+          </div>
+
+          {/* Feature 4: Undo Changes */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">Undo System Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              Undo Changes
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Revert unwanted changes with one-click
+            </p>
+          </div>
+
+          {/* Feature 5: PDF to Table Conversion */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">PDF Conversion Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              PDF to Table Conversion
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Eliminate manual data entry from financial statements, pitch decks, and research reports
+            </p>
+          </div>
+
+          {/* Feature 6: Smart Analytics */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div className="mb-4">
+              <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center mb-4">
+                <span className="text-gray-400 text-sm">Analytics Dashboard Preview</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+              Smart Analytics
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Automatically generate insights and visualizations from your data
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    {/* File Format Section */}
+    <section id="usecase" className="bg-white py-16 md:py-24 relative">
+
+      <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+          {/* Title and Description */}
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6 leading-tight" style={{fontFamily: 'Spectral, serif', fontWeight: 650}}>
+              Meet the <span className="italic">data intelligence</span> center for fast-moving teams
+            </h2>
+
+            <p className="text-xl md:text-2xl text-black leading-relaxed max-w-2xl mx-auto">
+              From upload to insights, give your team everything they need to analyze quickly, visualize clearly, and keep decisions data-driven.
+            </p>
+          </div>
+        </div>
+
+        {/* Tab Control - Centered */}
+        <div className="flex justify-center mb-16 overflow-x-auto px-4">
+          <div className="flex gap-2 md:gap-4 min-w-max">
+            {formats.map((format) => (
+              <button
+                key={format}
+                onClick={() => handleFormatClick(format)}
+                className={`relative overflow-hidden px-3 md:px-6 py-2 md:py-3 font-medium text-sm md:text-base transition-all duration-200 whitespace-nowrap ${
+                  selectedFormat === format
+                    ? 'bg-gray-400 text-white'
+                    : 'bg-gray-400 text-white hover:bg-gray-500'
+                }`}
+                style={{fontFamily: 'Arial, sans-serif'}}
+              >
+                {/* Animated Progress Background */}
+                {selectedFormat === format && progressPercentage > 0 && (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-[#cc4400] via-[#ff6600] to-[#cc4400] transition-all duration-75 ease-linear"
+                    style={{
+                      width: `${progressPercentage}%`,
+                      clipPath: `inset(0 ${100 - progressPercentage}% 0 0)`
+                    }}
+                  />
+                )}
+
+                {/* Button Text */}
+                <span className="relative z-10 text-white">
+                  {format}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Screen Display */}
+        <div className="w-full overflow-hidden relative z-20">
+          <div
+            ref={scrollContainerRef}
+            className="flex pb-4 transition-transform duration-700 ease-in-out"
+            style={{
+              width: 'calc(85vw * 5)',
+              scrollBehavior: 'smooth',
+              paddingLeft: '0',
+              scrollSnapType: 'x mandatory'
+            }}
+          >
+            {formats.map((format, index) => (
+              <div key={`${format}-${index}`} className="flex-shrink-0 w-[85vw] flex justify-center items-center scroll-snap-align-start">
+                {/* Screen View */}
+                <div className="w-[80vw] h-[50vh] md:h-[60vh] lg:h-[65vh] bg-black relative z-30 shadow-2xl border border-gray-300 flex items-center justify-center rounded-lg group">
+                  {format === 'Product Team' ? (
+                    <>
+                      <Image
+                        src="/image/product.png"
+                        alt="Product Team View"
+                        fill
+                        className="object-cover"
+                      />
+                      {/* Transparent text overlay */}
+                      <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-gradient-to-br from-[#cc4400]/20 via-[#ff6600]/30 to-[#cc4400]/20 backdrop-blur-sm p-4 md:p-8 max-w-xs md:max-w-md">
+                        <h3 className="text-black text-xl md:text-3xl font-bold mb-2 md:mb-4 flex items-center gap-2" style={{fontFamily: 'SpectralLight, serif'}}>
+                          Product Team
+                          <span className="transition-transform duration-200 hover:rotate-45 cursor-pointer">
+                            <FiArrowUpRight size={20} className="text-black md:hidden" />
+                            <FiArrowUpRight size={24} className="text-black hidden md:block" />
+                          </span>
+                        </h3>
+                        <p className="text-black text-sm md:text-lg leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          No More, Mind Buggling Excels to Analyze the Product
+                        </p>
+                      </div>
+                    </>
+                  ) : format === 'Finance' ? (
+                    <>
+                      <Image
+                        src="/image/finance.png"
+                        alt="Finance View"
+                        fill
+                        className="object-cover"
+                      />
+                      {/* Transparent text overlay for Finance */}
+                      <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-gradient-to-br from-[#cc4400]/20 via-[#ff6600]/30 to-[#cc4400]/20 backdrop-blur-sm p-4 md:p-8 max-w-xs md:max-w-md">
+                        <h3 className="text-black text-xl md:text-3xl font-bold mb-2 md:mb-4 flex items-center gap-2" style={{fontFamily: 'SpectralLight, serif'}}>
+                          Finance
+                          <span className="transition-transform duration-200 hover:rotate-45 cursor-pointer">
+                            <FiArrowUpRight size={20} className="text-black md:hidden" />
+                            <FiArrowUpRight size={24} className="text-black hidden md:block" />
+                          </span>
+                        </h3>
+                        <p className="text-black text-sm md:text-lg leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Transform Complex Financial Data into Clear, Actionable Insights
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-white text-lg font-medium" style={{fontFamily: 'NunitoSans, sans-serif'}}>
+                        {format} View
+                      </div>
+                      {/* Transparent text overlay for other formats */}
+                      <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-gradient-to-br from-[#cc4400]/20 via-[#ff6600]/30 to-[#cc4400]/20 backdrop-blur-sm p-4 md:p-8 max-w-xs md:max-w-md">
+                        <h3 className="text-black text-xl md:text-3xl font-bold mb-2 md:mb-4 flex items-center gap-2" style={{fontFamily: 'SpectralLight, serif'}}>
+                          {format}
+                          <span className="transition-transform duration-200 hover:rotate-45 cursor-pointer">
+                            <FiArrowUpRight size={20} className="text-black md:hidden" />
+                            <FiArrowUpRight size={24} className="text-black hidden md:block" />
+                          </span>
+                        </h3>
+                        <p className="text-black text-sm md:text-lg leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          {format === 'Finance' && 'Transform Complex Financial Data into Clear, Actionable Insights'}
+                          {format === 'Marketing' && 'Turn Campaign Data into Strategic Marketing Intelligence'}
+                          {format === 'Consulting' && 'Deliver Data-Driven Solutions for Strategic Decision Making'}
+                          {format === 'Research' && 'Convert Research Data into Compelling Visual Stories'}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Left Navigation Button - hide for Finance */}
+                  {format !== 'Finance' && (
+                    <div className="absolute left-0 top-0 h-full w-32 flex items-center justify-start opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={handlePrevious}
+                        className="w-12 h-12 bg-white bg-opacity-50 hover:bg-opacity-70 border border-gray-300 flex items-center justify-center transition-all duration-200 ml-4"
+                      >
+                        <FiArrowLeft size={20} className="text-gray-700" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Right Navigation Button - hide for Research */}
+                  {format !== 'Research' && (
+                    <div className="absolute right-0 top-0 h-full w-32 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={handleNext}
+                        className="w-12 h-12 bg-white bg-opacity-50 hover:bg-opacity-70 border border-gray-300 flex items-center justify-center transition-all duration-200 mr-4"
+                      >
+                        <FiArrowRight size={20} className="text-gray-700" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onStartLoading={handleStartLoading}
+      />
+      <LoadingScreen isVisible={isLoadingScreenVisible} />
+    </>
+  )
+}
