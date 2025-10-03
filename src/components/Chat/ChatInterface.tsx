@@ -8,7 +8,6 @@ import ChatInput from './ChatInput'
 import DataTable from '../Table/DataTable'
 import FileSystem from '../FileSystem/FileSystem'
 import ChatSearch from './ChatSearch'
-import AppConnector from '../AppConnector/AppConnector'
 import Settings from '../Settings/Settings'
 import Projects from '../Projects/Projects'
 import PlotlyChart from '../Chart/PlotlyChart'
@@ -84,7 +83,7 @@ export default function ChatInterface() {
   })
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState<'chat' | 'filesystem' | 'chatsearch' | 'appconnector' | 'settings' | 'projects'>('chat')
+  const [currentPage, setCurrentPage] = useState<'chat' | 'filesystem' | 'chatsearch' | 'settings' | 'projects'>('chat')
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [expandedChart, setExpandedChart] = useState<{chartData: any, title: string} | null>(null)
   const [panelWidth, setPanelWidth] = useState(50) // 차트 패널 너비 (퍼센트)
@@ -1645,38 +1644,6 @@ export default function ChatInterface() {
             {!isSidebarCollapsed && <span className="text-sm">{t('nav.fileSystem')}</span>}
           </button>
 
-          {/* App Connector */}
-          <button
-            onClick={() => {
-              setCurrentPage('appconnector')
-              updateCurrentSessionId(null)
-            }}
-            className={`w-full flex items-center rounded-lg hover:bg-orange-100 transition-colors ${
-              isSidebarCollapsed ? 'justify-center p-2' : 'space-x-3 px-3 py-2 text-left'
-            } ${currentPage === 'appconnector' ? 'bg-orange-100' : ''}`}
-            style={{ marginTop: '24px' }}
-          >
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
-            {!isSidebarCollapsed && <span className="text-sm">{t('nav.appConnector')}</span>}
-          </button>
-
-          {/* Dashboard */}
-          <button
-            onClick={() => {
-              setCurrentPage('dashboard')
-              updateCurrentSessionId(null)
-            }}
-            className={`w-full flex items-center rounded-lg hover:bg-orange-100 transition-colors ${
-              isSidebarCollapsed ? 'justify-center p-2' : 'space-x-3 px-3 py-2 text-left'
-            } ${currentPage === 'dashboard' ? 'bg-orange-100' : ''}`}
-          >
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            {!isSidebarCollapsed && <span className="text-sm">{t('nav.dashboard')}</span>}
-          </button>
           
         </div>
 
@@ -2061,54 +2028,6 @@ export default function ChatInterface() {
               setCurrentPage('chat')
             }}
           />
-          ) : currentPage === 'appconnector' ? (
-            <AppConnector user={user} />
-          ) : currentPage === 'dashboard' ? (
-            <div className="flex flex-col h-full bg-white text-gray-900">
-              <div className="max-w-6xl mx-auto w-full p-6">
-                <h1 className="text-2xl font-bold mb-2">{t('dashboard.title')}</h1>
-                <p className="text-gray-600 text-sm mb-6">
-                  {t('dashboard.description')}
-                </p>
-
-                {/* 임시 placeholder content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-md">
-                    <div className="flex items-center mb-4">
-                      <svg className="w-8 h-8 text-orange-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                      <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.chartAnalysis')}</h3>
-                    </div>
-                    <p className="text-gray-600 text-sm">{t('dashboard.chartAnalysisDesc')}</p>
-                  </div>
-
-                  <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-md">
-                    <div className="flex items-center mb-4">
-                      <svg className="w-8 h-8 text-orange-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                      <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.dataStatistics')}</h3>
-                    </div>
-                    <p className="text-gray-600 text-sm">{t('dashboard.dataStatisticsDesc')}</p>
-                  </div>
-
-                  <div className="bg-white rounded-lg p-6 border border-gray-300 shadow-md">
-                    <div className="flex items-center mb-4">
-                      <svg className="w-8 h-8 text-orange-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.usageStats')}</h3>
-                    </div>
-                    <p className="text-gray-600 text-sm">{t('dashboard.usageStatsDesc')}</p>
-                  </div>
-                </div>
-
-                <div className="mt-8 text-center">
-                  <p className="text-gray-500">{t('dashboard.underDevelopment')}</p>
-                </div>
-              </div>
-            </div>
           ) : currentPage === 'settings' ? (
             <Settings user={user} />
           ) : null}
