@@ -16,10 +16,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Afterwon",
   description: "AI-powered data analysis platform",
-  icons: {
-    icon: '/image/afterwon.png',
-    apple: '/image/afterwon.png',
-  },
 };
 
 export default function RootLayout({
