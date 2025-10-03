@@ -477,7 +477,7 @@ export default function PlotlyChart({ data, height = 520, onTitleChange, onChart
 
             {/* Color Picker Dropdown */}
             {showColorPicker && (
-              <div ref={colorPickerRef} className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-2xl p-4 z-[100] border border-gray-200">
+              <div ref={colorPickerRef} className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 w-64 bg-white rounded-lg shadow-2xl p-4 z-[100] border border-gray-200">
                 <div className="text-gray-800 text-sm font-medium mb-3">색상</div>
                 <div className="space-y-3">
                   {(data.data || []).map((trace: any, index: number) => {
@@ -496,7 +496,7 @@ export default function PlotlyChart({ data, height = 520, onTitleChange, onChart
                             style={{ backgroundColor: currentColor }}
                           />
                           {activeColorPicker === index && (
-                            <div ref={paletteRef} className="absolute top-full left-0 mt-2 p-3 bg-white rounded-lg shadow-2xl z-[110] border border-gray-200 w-64">
+                            <div ref={paletteRef} className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 p-3 bg-white rounded-lg shadow-2xl z-[110] border border-gray-200 w-64">
                               <div className="grid grid-cols-5 gap-2">
                                 {['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
                                   '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',

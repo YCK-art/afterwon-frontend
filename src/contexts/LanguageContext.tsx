@@ -47,7 +47,7 @@ const translations = {
     'auth.signup': '회원가입',
     'auth.email': '이메일',
     'auth.password': '비밀번호',
-    'auth.welcomeMessage': '안녕하세요! 데이터를 업로드하고 분석해보세요. CSV나 Excel 파일을 지원합니다. 파일 없이도 질문을 하실 수 있습니다.',
+    'auth.welcomeMessage': '안녕하세요! 데이터를 업로드하고 분석해보세요',
 
     // 네비게이션
     'nav.newChat': '새 채팅',
@@ -214,7 +214,7 @@ const translations = {
     'auth.signup': 'Sign Up',
     'auth.email': 'Email',
     'auth.password': 'Password',
-    'auth.welcomeMessage': 'Hello! Upload and analyze your data. We support CSV and Excel files. You can also ask questions without uploading files.',
+    'auth.welcomeMessage': 'Hello! Upload and analyze your data',
 
     // 네비게이션
     'nav.newChat': 'New Chat',
@@ -381,7 +381,7 @@ const translations = {
     'auth.signup': 'サインアップ',
     'auth.email': 'メール',
     'auth.password': 'パスワード',
-    'auth.welcomeMessage': 'こんにちは！データをアップロードして分析してください。CSVやExcelファイルをサポートしています。ファイルなしでも質問できます。',
+    'auth.welcomeMessage': 'こんにちは！データをアップロードして分析してください',
 
     // 네비게이션
     'nav.newChat': '新しいチャット',

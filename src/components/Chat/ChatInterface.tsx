@@ -1104,11 +1104,6 @@ export default function ChatInterface() {
                           break
 
                         case 'analysis_complete':
-                          // 코드가 없는 경우에만 최종 텍스트 응답 적용
-                          if (!updatedMessage.codeExecution && textBuffer) {
-                            updatedMessage.content += textBuffer
-                            textBuffer = ''
-                          }
                           console.log('📊 analysis_complete - chartData:', chunk.chartData ? '있음' : '없음')
                           if (chunk.chartData) {
                             console.log('📊 chartData 내용:', JSON.stringify(chunk.chartData).substring(0, 200))
@@ -1516,7 +1511,7 @@ export default function ChatInterface() {
     <div className="flex h-screen w-full max-w-none mx-auto overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`bg-orange-50 text-black flex flex-col transition-all duration-300 flex-shrink-0 ${
+        className={`bg-orange-50 text-black flex flex-col transition-all duration-300 flex-shrink-0 border-r border-orange-200 ${
           isSidebarCollapsed ? 'w-16 min-w-16' : 'w-64 min-w-64'
         }`}
       >

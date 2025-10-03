@@ -66,10 +66,10 @@ export default function ChatSearch({ user, chatHistory, onSessionClick, onNewCha
   }
 
   return (
-    <div className="flex flex-col h-full bg-white text-black">
-      <div className="max-w-4xl mx-auto w-full">
+    <div className="flex flex-col h-full bg-white text-black overflow-hidden">
+      <div className="flex flex-col h-full max-w-4xl mx-auto w-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 pb-4 pt-12">
+      <div className="flex items-center justify-between p-6 pb-4 pt-12 flex-shrink-0">
         <h1 className="text-2xl font-bold text-black">{t('chatSearch.title')}</h1>
         <button
           onClick={onNewChat}
@@ -83,7 +83,7 @@ export default function ChatSearch({ user, chatHistory, onSessionClick, onNewCha
       </div>
 
       {/* Search Bar */}
-      <div className="px-6 mb-6">
+      <div className="px-6 mb-6 flex-shrink-0">
         <div className="relative">
           <svg
             className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -105,7 +105,7 @@ export default function ChatSearch({ user, chatHistory, onSessionClick, onNewCha
       </div>
 
       {/* Results Count */}
-      <div className="px-6 mb-4">
+      <div className="px-6 mb-4 flex-shrink-0">
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <span>{t('chatSearch.totalChats', { count: chatHistory.length })}</span>
           <button className="text-orange-500 hover:text-orange-600">
@@ -115,13 +115,13 @@ export default function ChatSearch({ user, chatHistory, onSessionClick, onNewCha
       </div>
 
       {/* Chat History List */}
-      <div className="flex-1 px-6 overflow-y-auto">
+      <div className="flex-1 px-6 overflow-y-auto min-h-0">
         {filteredHistory.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
             {searchQuery ? t('chatSearch.noResults') : t('chatSearch.noHistory')}
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-1 pb-6">
             {filteredHistory.map((session) => (
               <button
                 key={session.id}
