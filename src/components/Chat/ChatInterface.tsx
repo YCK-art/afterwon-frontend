@@ -33,7 +33,7 @@ interface Message {
   fileInfo?: {
     filename: string
     fileSize: number
-    fileType: 'csv' | 'excel'
+    fileType: 'csv' | 'excel' | 'pdf'
     file_id: string
   }
   tableData?: {
@@ -550,7 +550,7 @@ export default function ChatInterface() {
       }
       
       // 메시지 형식 변환 및 파일 정보 복구
-      let sessionFileInfo = null
+      let sessionFileInfo: any = null
       const convertedMessages: Message[] = sessionMessages.map((msg, index) => {
         console.log(`📝 Converting message ${index + 1}:`, msg)
         
@@ -572,7 +572,7 @@ export default function ChatInterface() {
           id: msg.id || msg.timestamp?.toString() || `msg-${index}`,
           type: msg.type,
           content: msg.content,
-          timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp || Date.now()),
+          timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : (msg.timestamp ? new Date(msg.timestamp as any) : new Date()),
           chartData: msg.chartData,
           insights: msg.insights,
           followUpQuestions: msg.followUpQuestions,
@@ -620,7 +620,7 @@ export default function ChatInterface() {
       
     } catch (error) {
       console.error('❌ Failed to load session:', error)
-      console.error('❌ Error details:', error.message)
+      console.error('❌ Error details:', (error as Error).message)
       setUploadedFile(null)
     }
   }
@@ -1070,7 +1070,7 @@ export default function ChatInterface() {
                         case 'code_complete_display':
                           // 완성된 코드를 한 번에 표시
                           updatedMessage.codeExecution = {
-                            codeChunks: chunk.code.split('\n').filter(line => line.trim()),
+                            codeChunks: chunk.code.split('\n').filter((line: string) => line.trim()),
                             isExecuting: true,
                             result: '',
                             output: ''
@@ -1336,16 +1336,18 @@ export default function ChatInterface() {
       })
 
       // 오류 메시지도 Firestore에 저장
-      try {
-        await firestoreService.addMessage({
-          sessionId: currentSessionId,
-          userId: user.uid,
-          type: 'assistant',
-          content: `분석 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
-          timestamp: new Date() as any
-        })
-      } catch (firestoreError) {
-        console.error('Error saving error message to Firestore:', firestoreError)
+      if (currentSessionId) {
+        try {
+          await firestoreService.addMessage({
+            sessionId: currentSessionId,
+            userId: user.uid,
+            type: 'assistant',
+            content: `분석 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+            timestamp: new Date() as any
+          })
+        } catch (firestoreError) {
+          console.error('Error saving error message to Firestore:', firestoreError)
+        }
       }
     }
   }

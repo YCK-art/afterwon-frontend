@@ -573,7 +573,7 @@ export default function LandingPage() {
             <div className="flex justify-between items-center h-16">
               {/* Logo - moved inward */}
               <div className="flex items-center ml-2 sm:ml-4 lg:ml-6">
-                <a href="/" className="flex-shrink-0 flex items-center gap-1">
+                <Link href="/" className="flex-shrink-0 flex items-center gap-1">
                   <Image
                     src="/image/afterwon.png"
                     alt="Afterwon Logo"
@@ -590,7 +590,7 @@ export default function LandingPage() {
                   >
                     Afterwon
                   </span>
-                </a>
+                </Link>
               </div>
 
               {/* Navigation Links - Desktop */}
@@ -651,7 +651,7 @@ export default function LandingPage() {
                           };
 
                           return (
-                            <a
+                            <Link
                               key={format}
                               href={`#${format
                                 .toLowerCase()
@@ -694,20 +694,20 @@ export default function LandingPage() {
                                   }
                                 </div>
                               </div>
-                            </a>
+                            </Link>
                           );
                         })}
                       </div>
                     </div>
                   </div>
 
-                  <a
+                  <Link
                     href="/careers"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: "Arial, sans-serif", fontWeight: 550 }}
                   >
                     Careers
-                  </a>
+                  </Link>
                   <div className="relative group">
                     <span
                       className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
@@ -722,7 +722,7 @@ export default function LandingPage() {
                     {/* Dropdown Menu */}
                     <div className="absolute top-full left-0 mt-1 w-[28rem] bg-white rounded-lg shadow-xl border border-gray-200 backdrop-blur-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
                       <div className="py-3">
-                        <a
+                        <Link
                           href="/blog"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -743,8 +743,8 @@ export default function LandingPage() {
                               Latest insights and updates from our team
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/help"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -765,8 +765,8 @@ export default function LandingPage() {
                               Get support and find answers to your questions
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/security"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -787,24 +787,24 @@ export default function LandingPage() {
                               Learn about our security measures and compliance
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                  <a
+                  <Link
                     href="/pricing"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: "Arial, sans-serif", fontWeight: 550 }}
                   >
                     Pricing
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="#enterprise"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: "Arial, sans-serif", fontWeight: 550 }}
                   >
                     Enterprise sales
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -895,7 +895,7 @@ export default function LandingPage() {
           {isMobileMenuOpen && (
             <div className="min-[1000px]:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 z-60 shadow-lg">
               <div className="px-8 py-6 space-y-4">
-                <a
+                <Link
                   href="#usecase"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{
@@ -905,16 +905,16 @@ export default function LandingPage() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Use cases
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/careers"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{ fontFamily: "Arial, sans-serif", fontWeight: 500 }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Careers
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#enterprise"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{
@@ -924,7 +924,7 @@ export default function LandingPage() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Enterprise sales
-                </a>
+                </Link>
                 <button
                   onClick={() => {
                     handleGetStartedClick();
@@ -1578,49 +1578,49 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/#usecase"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Finance
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#usecase"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Marketing
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#usecase"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Product Team
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#usecase"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Consulting
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#usecase"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Research
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1635,31 +1635,31 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/blog"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Blog
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/help"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Help Center
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/security"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Security
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1674,31 +1674,31 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/careers"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Open Positions
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/careers"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Company Culture
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/careers"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Benefits
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1713,31 +1713,31 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/pricing"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Plans & Pricing
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/pricing"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Free Trial
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/pricing"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Enterprise
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1754,31 +1754,31 @@ export default function LandingPage() {
                 </h3>
                 <ul className="space-y-3">
                   <li>
-                    <a
+                    <Link
                       href="/#enterprise"
                       className="text-white/80 hover:text-white transition-colors"
                       style={{ fontFamily: 'Arial, sans-serif' }}
                     >
                       Enterprise Sales
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       href="/#enterprise"
                       className="text-white/80 hover:text-white transition-colors"
                       style={{ fontFamily: 'Arial, sans-serif' }}
                     >
                       Security
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       href="/#enterprise"
                       className="text-white/80 hover:text-white transition-colors"
                       style={{ fontFamily: 'Arial, sans-serif' }}
                     >
                       Integrations
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -1792,28 +1792,28 @@ export default function LandingPage() {
                   Connect
                 </h3>
                 <div className="flex gap-4">
-                <a
+                <Link
                   href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   <FaTwitter size={24} />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   <FaInstagram size={24} />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="mailto:contact@afterwon.com"
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   <FiMail size={24} />
-                </a>
+                </Link>
                 </div>
               </div>
             </div>
@@ -1829,20 +1829,20 @@ export default function LandingPage() {
                 © 2025 Afterwon. All rights reserved.
               </p>
               <div className="flex gap-6 mt-4 md:mt-0">
-                <a
+                <Link
                   href="/privacy"
                   className="text-white/80 hover:text-white transition-colors text-sm"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Privacy Policy
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/terms"
                   className="text-white/80 hover:text-white transition-colors text-sm"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Terms of Service
-                </a>
+                </Link>
               </div>
             </div>
           </div>

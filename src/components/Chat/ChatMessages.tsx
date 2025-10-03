@@ -66,7 +66,7 @@ const formatMessage = (content: string) => {
 
     // 각 단락 내에서 줄바꿈 처리
     const lines = paragraph.split('\n')
-    const elements: JSX.Element[] = []
+    const elements: React.ReactElement[] = []
 
     let i = 0
     while (i < lines.length) {
@@ -254,7 +254,7 @@ const renderMathContent = (text: string) => {
 
     const parts = []
     let lastIndex = 0
-    let match
+    let match: RegExpExecArray | null
 
     // LaTeX 블록 수식 처리
     const latexBlockMatches = []
@@ -282,7 +282,7 @@ const renderMathContent = (text: string) => {
     const inlineMatches = []
     while ((match = inlineMathRegex.exec(text)) !== null) {
       const isInBlock = [...latexBlockMatches, ...blockMatches].some(block =>
-        match.index >= block.start && match.index < block.end
+        match!.index >= block.start && match!.index < block.end
       )
       if (!isInBlock) {
         inlineMatches.push({
@@ -395,7 +395,7 @@ const processMarkdownText = (text: string, keyPrefix: string) => {
   // 더 정확한 마크다운 정규식 - 개행 문자도 포함
   const markdownRegex = /(\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g
 
-  let result = []
+  const result = []
   let lastIndex = 0
   let match
 
@@ -473,7 +473,7 @@ const processMarkdownText = (text: string, keyPrefix: string) => {
 }
 
 // File Info Component
-const FileInfoCard = ({ fileInfo }: { fileInfo: { filename: string; fileSize: number; fileType: 'csv' | 'excel' } }) => {
+const FileInfoCard = ({ fileInfo }: { fileInfo: { filename: string; fileSize: number; fileType: 'csv' | 'excel' | 'pdf' } }) => {
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -496,8 +496,8 @@ const FileInfoCard = ({ fileInfo }: { fileInfo: { filename: string; fileSize: nu
     }
   }
 
-  const getFileTypeLabel = (fileType: 'csv' | 'excel') => {
-    return fileType === 'csv' ? 'spreadsheet' : 'spreadsheet'
+  const getFileTypeLabel = (fileType: 'csv' | 'excel' | 'pdf') => {
+    return fileType === 'csv' ? 'spreadsheet' : fileType === 'pdf' ? 'document' : 'spreadsheet'
   }
 
   return (
@@ -585,7 +585,7 @@ interface Message {
   fileInfo?: {
     filename: string
     fileSize: number
-    fileType: 'csv' | 'excel'
+    fileType: 'csv' | 'excel' | 'pdf'
     file_id: string
   }
   tableData?: {
@@ -609,7 +609,7 @@ interface ChatMessagesProps {
   onFollowUpClick: (question: string) => void
   onChartExpand?: (chartData: any, title: string) => void
   uploadedFile?: any
-  user?: User | null
+  user: User | null
   onMessageUpdate?: (messageId: string, updates: Partial<Message>) => void
 }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { User } from 'firebase/auth'
 import { userService } from '@/services/userService'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -233,7 +234,7 @@ export default function Settings({ user }: SettingsProps) {
           <span className="bg-orange-500 text-white text-xs px-3 py-1 rounded-full">{t('settings.beta')}</span>
         </div>
         <p className="text-gray-600 text-sm mb-4">
-          {t('settings.preferencesSubtitle')} <a href="#" className="text-orange-500 hover:text-orange-600">{t('settings.preferencesLink')}</a>
+          {t('settings.preferencesSubtitle')} <Link href="#" className="text-orange-500 hover:text-orange-600">{t('settings.preferencesLink')}</Link>
         </p>
         <textarea
           placeholder={t('settings.preferencesPlaceholder')}

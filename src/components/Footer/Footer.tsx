@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { FaTwitter, FaInstagram } from 'react-icons/fa'
 import { FiMail } from 'react-icons/fi'
 
@@ -45,49 +46,49 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a
+                <Link
                   href="/#usecase"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Finance
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/#usecase"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Marketing
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/#usecase"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Product Team
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/#usecase"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Consulting
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/#usecase"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Research
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -102,31 +103,31 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a
+                <Link
                   href="/blog"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/help"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Help Center
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/security"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Security
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -141,31 +142,31 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a
+                <Link
                   href="/careers"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Open Positions
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/careers"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Company Culture
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/careers"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Benefits
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -180,31 +181,31 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a
+                <Link
                   href="/pricing"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Plans & Pricing
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/pricing"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Free Trial
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/pricing"
                   className="text-white/80 hover:text-white transition-colors"
                   style={{ fontFamily: 'Arial, sans-serif' }}
                 >
                   Enterprise
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -221,31 +222,31 @@ export default function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/#enterprise"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Enterprise Sales
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#enterprise"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Security
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/#enterprise"
                     className="text-white/80 hover:text-white transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Integrations
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -259,28 +260,28 @@ export default function Footer() {
                 Connect
               </h3>
               <div className="flex gap-4">
-              <a
+              <Link
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white transition-colors"
               >
                 <FaTwitter size={24} />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white transition-colors"
               >
                 <FaInstagram size={24} />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="mailto:contact@afterwon.com"
                 className="text-white/80 hover:text-white transition-colors"
               >
                 <FiMail size={24} />
-              </a>
+              </Link>
               </div>
             </div>
           </div>
@@ -296,20 +297,20 @@ export default function Footer() {
               © 2025 Afterwon. All rights reserved.
             </p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a
+              <Link
                 href="/privacy"
                 className="text-white/80 hover:text-white transition-colors text-sm"
                 style={{ fontFamily: 'Arial, sans-serif' }}
               >
                 Privacy Policy
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/terms"
                 className="text-white/80 hover:text-white transition-colors text-sm"
                 style={{ fontFamily: 'Arial, sans-serif' }}
               >
                 Terms of Service
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -316,7 +316,7 @@ export default function PlotlyChart({ data, height = 520, onTitleChange, onChart
           }
           
           // Enhance hover behavior for bar charts specifically and apply saved colors
-          const enhancedData = plotData.map((trace, index) => {
+          const enhancedData = plotData.map((trace: any, index: number) => {
             const baseTrace = {
               ...trace,
               hoverlabel: trace.type === 'bar' ? {

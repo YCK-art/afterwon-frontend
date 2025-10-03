@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -22,16 +23,10 @@ import {
   FiX,
   FiTrendingUp,
   FiActivity,
-  FiZap,
-  FiCpu,
   FiLock,
-  FiPackage,
-  FiPieChart,
   FiFileText,
   FiGrid,
   FiDatabase,
-  FiGlobe,
-  FiCloud,
 } from 'react-icons/fi'
 
 export default function BlogDetailPage() {
@@ -100,7 +95,7 @@ export default function BlogDetailPage() {
 
   const formatContent = (content: string) => {
     const lines = content.split('\n')
-    const elements: JSX.Element[] = []
+    const elements: React.ReactElement[] = []
     let key = 0
 
     for (let i = 0; i < lines.length; i++) {
@@ -247,7 +242,7 @@ export default function BlogDetailPage() {
             <div className="flex justify-between items-center h-16">
               {/* Logo */}
               <div className="flex items-center ml-2 sm:ml-4 lg:ml-6">
-                <a href="/" className="flex-shrink-0 flex items-center gap-1">
+                <Link href="/" className="flex-shrink-0 flex items-center gap-1">
                   <Image
                     src="/image/afterwon.png"
                     alt="Afterwon Logo"
@@ -264,7 +259,7 @@ export default function BlogDetailPage() {
                   >
                     Afterwon
                   </span>
-                </a>
+                </Link>
               </div>
 
               {/* Navigation Links - Desktop */}
@@ -285,7 +280,7 @@ export default function BlogDetailPage() {
                     {/* Dropdown Menu */}
                     <div className="absolute top-full left-0 mt-1 w-[28rem] bg-white rounded-lg shadow-xl border border-gray-200 backdrop-blur-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
                       <div className="py-3">
-                        <a
+                        <Link
                           href="/#usecase"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -306,8 +301,8 @@ export default function BlogDetailPage() {
                               Transform complex financial data into insights
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/#usecase"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -328,8 +323,8 @@ export default function BlogDetailPage() {
                               Turn campaign data into marketing intelligence
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/#usecase"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -350,8 +345,8 @@ export default function BlogDetailPage() {
                               Analyze product metrics and KPIs efficiently
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/#usecase"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -372,8 +367,8 @@ export default function BlogDetailPage() {
                               Deliver data-driven solutions for clients
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/#usecase"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -394,18 +389,18 @@ export default function BlogDetailPage() {
                               Convert research data into visual stories
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
 
-                  <a
+                  <Link
                     href="/careers"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif', fontWeight: 550 }}
                   >
                     Careers
-                  </a>
+                  </Link>
                   <div className="relative group">
                     <span
                       className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
@@ -420,7 +415,7 @@ export default function BlogDetailPage() {
                     {/* Dropdown Menu */}
                     <div className="absolute top-full left-0 mt-1 w-[28rem] bg-white rounded-lg shadow-xl border border-gray-200 backdrop-blur-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
                       <div className="py-3">
-                        <a
+                        <Link
                           href="/blog"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -441,8 +436,8 @@ export default function BlogDetailPage() {
                               Latest insights and updates from our team
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/help"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -463,8 +458,8 @@ export default function BlogDetailPage() {
                               Get support and find answers to your questions
                             </div>
                           </div>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                           href="/security"
                           className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
@@ -485,24 +480,24 @@ export default function BlogDetailPage() {
                               Learn about our security measures and compliance
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                  <a
+                  <Link
                     href="/pricing"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif', fontWeight: 550 }}
                   >
                     Pricing
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="#enterprise"
                     className="text-black hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                     style={{ fontFamily: 'Arial, sans-serif', fontWeight: 550 }}
                   >
                     Enterprise sales
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -537,7 +532,7 @@ export default function BlogDetailPage() {
           {isMobileMenuOpen && (
             <div className="min-[1000px]:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 z-60 shadow-lg">
               <div className="px-8 py-6 space-y-4">
-                <a
+                <Link
                   href="/#usecase"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{
@@ -547,39 +542,39 @@ export default function BlogDetailPage() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Use cases
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/careers"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{ fontFamily: 'Arial, sans-serif', fontWeight: 500 }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Careers
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/blog"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{ fontFamily: 'Arial, sans-serif', fontWeight: 500 }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Resources
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/pricing"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{ fontFamily: 'Arial, sans-serif', fontWeight: 500 }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Pricing
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#enterprise"
                   className="block text-black hover:text-gray-600 py-3 text-lg font-medium transition-colors border-b border-gray-200 last:border-b-0"
                   style={{ fontFamily: 'Arial, sans-serif', fontWeight: 500 }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Enterprise sales
-                </a>
+                </Link>
                 <button
                   onClick={() => {
                     handleGetStartedClick()

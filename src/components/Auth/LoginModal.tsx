@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 
 import { useState } from 'react'
 import { FaGoogle, FaApple } from 'react-icons/fa'
@@ -93,13 +94,13 @@ export default function LoginModal({ isOpen, onClose, onStartLoading }: LoginMod
 
         {/* Footer */}
         <div className="text-center">
-          <a
+          <Link
             href="#"
             className="text-orange-500 hover:text-orange-600 transition-colors text-sm underline font-medium"
             style={{fontFamily: 'Arial, sans-serif', fontWeight: 500}}
           >
             Why sign up with my work email?
-          </a>
+          </Link>
         </div>
       </div>
     </div>

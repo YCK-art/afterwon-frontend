@@ -76,12 +76,12 @@ export default function FileSystem({ user }: FileSystemProps) {
         id: file.id || '',
         name: file.fileName,
         size: formatFileSize(file.fileSize),
-        uploadDate: formatUploadDate(file.uploadedAt.toDate ? file.uploadedAt.toDate() : new Date(file.uploadedAt)),
+        uploadDate: formatUploadDate(file.uploadedAt.toDate ? file.uploadedAt.toDate() : new Date(file.uploadedAt as any)),
         type: getFileType(file.fileName, file.fileType),
         selected: false,
         fileUrl: file.fileUrl,
         originalSize: file.fileSize,
-        uploadedAt: file.uploadedAt.toDate ? file.uploadedAt.toDate() : new Date(file.uploadedAt)
+        uploadedAt: file.uploadedAt.toDate ? file.uploadedAt.toDate() : new Date(file.uploadedAt as any)
       }))
       
       setFiles(convertedFiles)

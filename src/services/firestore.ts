@@ -78,6 +78,11 @@ export interface ChatMessage {
     columns: string[];
     filename: string;
   };
+  codeExecution?: {
+    codeChunks: string[];
+    isExecuting: boolean;
+    result?: string;
+  };
 }
 
 export interface FileMetadata {
@@ -185,24 +190,24 @@ export const firestoreService = {
 
       const messageId = Date.now().toString();
       const chatRef = doc(db, 'chat', message.sessionId);
-      
+
+      // Firestore 호환성을 위해 중첩 배열 처리
+      const sanitizedMessage = {
+        ...message,
+        // chartData가 중첩 배열을 포함할 수 있으므로 JSON 문자열로 변환
+        chartData: message.chartData ? JSON.stringify(message.chartData) : null,
+        // tableData도 중첩 배열을 포함할 수 있으므로 JSON 문자열로 변환
+        tableData: message.tableData ? {
+          ...message.tableData,
+          data: JSON.stringify(message.tableData.data) // 데이터 배열을 문자열로 변환
+        } : null
+      };
+
       // 기존 채팅 문서 가져오기
       const chatSnap = await getDoc(chatRef);
       if (chatSnap.exists()) {
         const chatData = chatSnap.data();
         const messages = chatData.messages || [];
-        
-        // Firestore 호환성을 위해 중첩 배열 처리
-        const sanitizedMessage = {
-          ...message,
-          // chartData가 중첩 배열을 포함할 수 있으므로 JSON 문자열로 변환
-          chartData: message.chartData ? JSON.stringify(message.chartData) : null,
-          // tableData도 중첩 배열을 포함할 수 있으므로 JSON 문자열로 변환
-          tableData: message.tableData ? {
-            ...message.tableData,
-            data: JSON.stringify(message.tableData.data) // 데이터 배열을 문자열로 변환
-          } : null
-        };
         
         // 새 메시지 추가 - serverTimestamp() 대신 일반 Date 사용 (배열 안에서는 serverTimestamp 지원 안됨)
         const newMessage = {

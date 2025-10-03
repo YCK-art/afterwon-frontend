@@ -537,7 +537,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   }
 
   const t = (key: string, params?: Record<string, string | number>): string => {
-    const translation = translations[language]?.[key] || key
+    const translation = (translations[language] as any)?.[key] || key
 
     if (params) {
       return Object.entries(params).reduce((text, [param, value]) => {
