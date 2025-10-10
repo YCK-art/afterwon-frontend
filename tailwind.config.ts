@@ -19,6 +19,13 @@ export default {
       },
       animation: {
         'bounce': 'bounce 1s infinite',
+        'shine': 'shine 3s infinite',
+      },
+      keyframes: {
+        shine: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       }
     },
   },

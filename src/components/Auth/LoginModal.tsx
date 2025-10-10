@@ -14,7 +14,7 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose, onStartLoading }: LoginModalProps) {
-  const [email, setEmail] = useState('')
+  // const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   

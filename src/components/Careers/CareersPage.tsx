@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import Footer from '@/components/Footer/Footer'
 import LoginModal from '../Auth/LoginModal'
 import LoadingScreen from '../Auth/LoadingScreen'
-import { authService } from '@/services/auth'
 import {
   FiArrowUpRight,
   FiDollarSign,
@@ -57,7 +56,7 @@ const jobListings: JobListing[] = [
 ]
 
 export default function CareersPage() {
-  const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'ENGINEERING' | 'OTHER'>('ALL')
+  // const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'ENGINEERING' | 'OTHER'>('ALL')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isLoadingScreenVisible, setIsLoadingScreenVisible] = useState(false)
@@ -77,9 +76,9 @@ export default function CareersPage() {
     }, 3000)
   }
 
-  const filteredJobs = selectedCategory === 'ALL'
-    ? jobListings
-    : jobListings.filter(job => job.category === selectedCategory)
+  // const filteredJobs = selectedCategory === 'ALL'
+  //   ? jobListings
+  //   : jobListings.filter(job => job.category === selectedCategory)
 
   const engineeringJobs = jobListings.filter(job => job.category === 'ENGINEERING')
   const otherJobs = jobListings.filter(job => job.category === 'OTHER')

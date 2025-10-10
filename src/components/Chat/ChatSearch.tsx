@@ -12,7 +12,7 @@ interface ChatSearchProps {
   onNewChat: () => void
 }
 
-export default function ChatSearch({ user, chatHistory, onSessionClick, onNewChat }: ChatSearchProps) {
+export default function ChatSearch({ chatHistory, onSessionClick, onNewChat }: ChatSearchProps) {
   const { t } = useLanguage()
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredHistory, setFilteredHistory] = useState<ChatSession[]>([])

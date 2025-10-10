@@ -1,7 +1,7 @@
-import { 
-  collection, 
-  doc, 
-  addDoc, 
+import {
+  collection,
+  doc,
+  addDoc,
   setDoc,
   getDoc,
   getDocs,
@@ -9,7 +9,6 @@ import {
   query,
   where,
   orderBy,
-  onSnapshot,
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';

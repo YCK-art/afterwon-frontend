@@ -1,11 +1,10 @@
-import { 
-  doc, 
-  setDoc, 
-  getDoc, 
+import {
+  doc,
+  setDoc,
+  getDoc,
   addDoc,
   collection,
-  serverTimestamp,
-  Timestamp 
+  Timestamp
 } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 import { db } from '@/lib/firebase';

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import ChatHeader from './ChatHeader'
 import ChatMessages from './ChatMessages'
 import ChatInput from './ChatInput'
-import DataTable from '../Table/DataTable'
+// import DataTable from '../Table/DataTable' // unused
 import FileSystem from '../FileSystem/FileSystem'
 import ChatSearch from './ChatSearch'
 import Settings from '../Settings/Settings'
@@ -53,8 +53,13 @@ interface Message {
 export default function ChatInterface() {
   const { t } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading] = useState(false)
   const [uploadedFile, setUploadedFile] = useState<any>(null)
+  const [currentTableData, setCurrentTableData] = useState<{
+    data: any[]
+    columns: string[]
+    filename: string
+  } | null>(null)
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true)
   const [user, setUser] = useState<User | null>(null)
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(() => {
@@ -100,7 +105,8 @@ export default function ChatInterface() {
   const [mounted, setMounted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const resizerRef = useRef<HTMLDivElement>(null)
-  
+  const tableUpdateProcessedRef = useRef<Set<string>>(new Set())
+
   // 사용자 정보 캐싱을 위한 state 추가
   const [cachedUserInfo, setCachedUserInfo] = useState<{
     initial: string
@@ -114,7 +120,7 @@ export default function ChatInterface() {
     }
     return null
   })
-  const { sendMessage: sendWebSocketMessage, lastMessage, isConnected } = useWebSocket(false)
+  const { sendMessage: sendWebSocketMessage, isConnected } = useWebSocket(false)
   const router = useRouter()
 
   // 사용자 정보 업데이트 및 캐싱
@@ -188,14 +194,14 @@ export default function ChatInterface() {
   }
 
   // 새 채팅 시작 함수 (테스트용)
-  const startNewChat = () => {
-    console.log('🆕 Starting new chat - clearing current session')
-    setCurrentSessionId(null)
-    updateCurrentSessionId(null)
-    setMessages([])
-    localStorage.removeItem('currentSessionId')
-    console.log('✅ Session cleared, ready for new chat')
-  }
+  // const startNewChat = () => {
+  //   console.log('🆕 Starting new chat - clearing current session')
+  //   setCurrentSessionId(null)
+  //   updateCurrentSessionId(null)
+  //   setMessages([])
+  //   localStorage.removeItem('currentSessionId')
+  //   console.log('✅ Session cleared, ready for new chat')
+  // }
 
   // currentSessionId 업데이트 시 localStorage에도 저장
   const updateCurrentSessionId = (sessionId: string | null) => {
@@ -332,6 +338,7 @@ export default function ChatInterface() {
     })
 
     return () => unsubscribe()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
   // 채팅 히스토리 불러오기
@@ -482,33 +489,33 @@ export default function ChatInterface() {
   }, [isLoading, isChartExpanded, isAutoScrollEnabled])
 
   // 타임스탬프 포맷팅
-  const formatTimestamp = (timestamp: any) => {
-    if (!timestamp) return ''
-    
-    let date: Date
-    if (timestamp.toDate) {
-      // Firestore Timestamp
-      date = timestamp.toDate()
-    } else if (timestamp instanceof Date) {
-      date = timestamp
-    } else {
-      date = new Date(timestamp)
-    }
-    
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / (1000 * 60))
-    const diffHours = Math.floor(diffMins / 60)
-    const diffDays = Math.floor(diffHours / 24)
-    
-    if (diffMins < 1) return '방금 전'
-    if (diffMins < 60) return `${diffMins}분 전`
-    if (diffHours < 24) return `${diffHours}시간 전`
-    if (diffDays === 1) return '어제'
-    if (diffDays < 7) return `${diffDays}일 전`
-    
-    return date.toLocaleDateString('ko-KR')
-  }
+  // const formatTimestamp = (timestamp: any) => {
+  //   if (!timestamp) return ''
+  //
+  //   let date: Date
+  //   if (timestamp.toDate) {
+  //     // Firestore Timestamp
+  //     date = timestamp.toDate()
+  //   } else if (timestamp instanceof Date) {
+  //     date = timestamp
+  //   } else {
+  //     date = new Date(timestamp)
+  //   }
+  //
+  //   const now = new Date()
+  //   const diffMs = now.getTime() - date.getTime()
+  //   const diffMins = Math.floor(diffMs / (1000 * 60))
+  //   const diffHours = Math.floor(diffMins / 60)
+  //   const diffDays = Math.floor(diffHours / 24)
+  //
+  //   if (diffMins < 1) return '방금 전'
+  //   if (diffMins < 60) return `${diffMins}분 전`
+  //   if (diffHours < 24) return `${diffHours}시간 전`
+  //   if (diffDays === 1) return '어제'
+  //   if (diffDays < 7) return `${diffDays}일 전`
+  //
+  //   return date.toLocaleDateString('ko-KR')
+  // }
 
   // 세션 클릭 핸들러
   const handleSessionClick = async (sessionId: string) => {
@@ -627,6 +634,18 @@ export default function ChatInterface() {
 
   const handleFollowUpClick = (question: string) => {
     handleSendMessage(question)
+  }
+
+  const handleTableChange = (updatedData: { data: any[], columns: string[] }) => {
+    console.log('📊 Table data changed:', updatedData)
+    // currentTableData 업데이트
+    if (currentTableData) {
+      setCurrentTableData({
+        ...currentTableData,
+        data: updatedData.data,
+        columns: updatedData.columns
+      })
+    }
   }
 
   const handleMessageUpdate = async (messageId: string, updates: Partial<Message>) => {
@@ -951,7 +970,7 @@ export default function ChatInterface() {
     setMessages(prev => [...prev, initialAssistantMessage])
 
     // 첫 번째 사용자 메시지인지 확인 (환영 메시지 제외)
-    const isFirstUserMessage = messages.length <= 1 || messages.filter(m => m.type === 'user').length === 0
+    // const isFirstUserMessage = messages.length <= 1 || messages.filter(m => m.type === 'user').length === 0
 
     try {
       // Firestore에 사용자 메시지 저장 시도 (실패해도 계속 진행)
@@ -996,17 +1015,23 @@ export default function ChatInterface() {
       }
 
       // 통합 API를 사용한 AI 응답 생성
-      let assistantMessage: Message;
-
       try {
         // 복원된 파일인지 확인 (restored_ 접두사로 시작하는 경우)
         if (uploadedFile && uploadedFile.file_id.startsWith('restored_')) {
-          assistantMessage = {
-            id: (Date.now() + 1).toString(),
-            type: 'assistant',
-            content: '죄송합니다. 이 채팅에서 사용된 파일이 더 이상 서버에 존재하지 않습니다. 새로운 파일을 업로드해주세요.',
-            timestamp: new Date()
-          }
+          // 에러 메시지를 표시
+          setMessages(prevMessages => {
+            return prevMessages.map(msg => {
+              if (msg.id === assistantMessageId) {
+                return {
+                  ...msg,
+                  content: '죄송합니다. 이 채팅에서 사용된 파일이 더 이상 서버에 존재하지 않습니다. 새로운 파일을 업로드해주세요.',
+                  isStreaming: false
+                }
+              }
+              return msg
+            })
+          })
+          return
         } else {
           // 대화 히스토리 준비 (최근 10개 메시지만)
           const conversationHistory = messages
@@ -1027,7 +1052,11 @@ export default function ChatInterface() {
             {
               question: content,
               file_id: uploadedFile?.file_id || null,
-              conversation_history: conversationHistory
+              conversation_history: conversationHistory,
+              modified_data: currentTableData ? {
+                data: currentTableData.data,
+                columns: currentTableData.columns
+              } : null
             },
             // onChunk: ChatGPT 스타일 실시간 메시지 업데이트 (최적화됨)
             (() => {
@@ -1036,6 +1065,20 @@ export default function ChatInterface() {
 
               return (chunk) => {
                 console.log('📦 Received chunk:', chunk.type, chunk.content?.substring?.(0, 20))
+
+                // table_updated 타입이면 currentTableData 업데이트 (중복 방지)
+                if (chunk.type === 'table_updated' && chunk.tableData) {
+                  const updateKey = `${assistantMessageId}_table`
+                  if (!tableUpdateProcessedRef.current.has(updateKey)) {
+                    console.log('📝 Updating currentTableData from chunk')
+                    tableUpdateProcessedRef.current.add(updateKey)
+                    setCurrentTableData({
+                      data: chunk.tableData.data,
+                      columns: chunk.tableData.columns,
+                      filename: chunk.tableData.filename || 'Modified Data'
+                    })
+                  }
+                }
 
                 // text_stream의 경우에만 throttling 적용 (code_stream은 즉시 처리)
                 if (chunk.type === 'text_stream') {
@@ -1097,6 +1140,11 @@ export default function ChatInterface() {
                           updatedMessage.chartData = chunk.chartData
                           break
 
+                        case 'table_updated':
+                          // 테이블이 수정되면 표시
+                          console.log('📝 Table updated chunk received:', chunk.tableData)
+                          updatedMessage.tableData = chunk.tableData
+                          break
 
                         case 'insights_generated':
                           // 인사이트 표시 비활성화 (text_stream으로 통합)
@@ -1426,6 +1474,13 @@ export default function ChatInterface() {
           filename: uploadResponse.filename
         }
       }
+
+      // currentTableData 설정 (테이블 수정 추적용)
+      setCurrentTableData({
+        data: uploadResponse.preview,
+        columns: uploadResponse.columns,
+        filename: uploadResponse.filename
+      })
 
       // 업로드 시작 메시지를 완료 메시지로 교체
       setMessages(prev => prev.map(msg =>
@@ -1882,6 +1937,7 @@ export default function ChatInterface() {
                   uploadedFile={uploadedFile}
                   user={user}
                   onMessageUpdate={handleMessageUpdate}
+                  onTableChange={handleTableChange}
                 />
               </div>
 
@@ -1960,6 +2016,7 @@ export default function ChatInterface() {
                     uploadedFile={uploadedFile}
                     user={user}
                     onMessageUpdate={handleMessageUpdate}
+                    onTableChange={handleTableChange}
                   />
                 </div>
 

@@ -29,7 +29,7 @@ export function useWebSocket(autoConnect: boolean = false): UseWebSocketReturn {
     }
 
     try {
-      const ws = new WebSocket('ws://localhost:8000/ws/analysis')
+      const ws = new WebSocket('ws://localhost:8001/ws/analysis')
       
       ws.onopen = () => {
         console.log('WebSocket connected')
@@ -52,14 +52,14 @@ export function useWebSocket(autoConnect: boolean = false): UseWebSocketReturn {
         websocketRef.current = null
       }
 
-      ws.onerror = (error) => {
+      ws.onerror = () => {
         console.warn('WebSocket connection failed - continuing without real-time updates')
         setConnectionError(null) // Don't show error to user
         setIsConnected(false)
       }
 
       websocketRef.current = ws
-    } catch (error) {
+    } catch {
       console.warn('Failed to create WebSocket connection - continuing without real-time updates')
       setConnectionError(null) // Don't show error to user
     }

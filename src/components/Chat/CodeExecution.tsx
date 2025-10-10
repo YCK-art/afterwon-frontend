@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTypewriter } from '@/hooks/useTypewriter'
 
 interface CodeExecutionProps {
   codeChunks: string[]
@@ -32,9 +31,9 @@ export default function CodeExecution({ codeChunks, isExecuting, onComplete }: C
     }
   }, [isExecuting, codeChunks.length, isCompleted, onComplete])
 
-  const getCurrentDisplayCode = () => {
-    return displayedLines.join('\n')
-  }
+  // const getCurrentDisplayCode = () => {
+  //   return displayedLines.join('\n')
+  // }
 
   const handleCopyCode = async () => {
     try {
@@ -165,7 +164,7 @@ export default function CodeExecution({ codeChunks, isExecuting, onComplete }: C
     return tokens
   }
 
-  const renderHighlightedLine = (line: string, isTyping: boolean = false) => {
+  const renderHighlightedLine = (line: string) => {
     if (!line.trim()) return <span>&nbsp;</span>
 
     const tokens = highlightPythonTokens(line)
@@ -198,63 +197,44 @@ export default function CodeExecution({ codeChunks, isExecuting, onComplete }: C
   }
 
   return (
-    <div className="bg-orange-50 rounded-xl border border-orange-200 mt-4 mb-2 shadow-md relative">
-      {/* Header with Python logo and action buttons */}
-      <div className="flex items-center justify-between px-6 py-4 bg-orange-100 rounded-t-xl border-b border-orange-200">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-yellow-400 rounded-md flex items-center justify-center">
-              <span className="text-xs font-bold text-white">Py</span>
-            </div>
-            <span className="text-black font-semibold text-sm">Python</span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={handleCopyCode}
-            className="p-1.5 bg-orange-200 hover:bg-orange-300 text-gray-700 rounded-md transition-colors"
-            title="코드 복사"
-          >
-            {isCopied ? (
-              <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-            )}
-          </button>
-        </div>
+    <div className="bg-orange-50 rounded-lg mt-4 mb-2 overflow-hidden relative">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 bg-orange-50">
+        <span className="text-gray-600 text-xs font-medium">python</span>
+        <button
+          onClick={handleCopyCode}
+          className="p-1.5 hover:bg-orange-100 text-gray-600 rounded transition-colors"
+          title="코드 복사"
+        >
+          {isCopied ? (
+            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          )}
+        </button>
       </div>
 
-      {/* Code Display with size limits and scroll */}
-      <div className="p-6 bg-orange-50 max-h-96 overflow-auto">
-        <div className="font-mono text-sm leading-relaxed max-w-full overflow-x-auto">
-          <div className="min-w-max">
-            {displayedLines.map((line, lineIndex) => {
-              const lineNumber = lineIndex + 1
-              const isLastLine = lineIndex === displayedLines.length - 1
-              const showCursor = isExecuting && !isCompleted && isLastLine
+      {/* Code Display */}
+      <div className="p-4">
+        <div className="font-mono text-sm leading-relaxed">
+          {displayedLines.map((line, lineIndex) => {
+            const isLastLine = lineIndex === displayedLines.length - 1
+            const showCursor = isExecuting && !isCompleted && isLastLine
 
-              return (
-                <div key={lineIndex} className="flex hover:bg-orange-100/50 rounded">
-                  <span className="text-gray-500 mr-6 select-none w-8 text-right text-xs font-medium py-0.5 flex-shrink-0">
-                    {line.trim() ? lineNumber : ''}
-                  </span>
-                  <div className="flex-1 py-0.5 min-w-0 break-words">
-                    <span className="whitespace-pre-wrap">{renderHighlightedLine(line)}</span>
-                    {showCursor && (
-                      <span className="bg-orange-400 text-orange-400 ml-0.5 animate-pulse">|</span>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+            return (
+              <div key={lineIndex} className="min-h-[1.5rem]">
+                <span className="whitespace-pre-wrap">{renderHighlightedLine(line)}</span>
+                {showCursor && (
+                  <span className="bg-orange-400 text-orange-400 ml-0.5 animate-pulse">|</span>
+                )}
+              </div>
+            )
+          })}
         </div>
-
       </div>
     </div>
   )

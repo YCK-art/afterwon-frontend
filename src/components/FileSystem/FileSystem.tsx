@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { User } from 'firebase/auth'
-import { firestoreService, FileMetadata } from '@/services/firestore'
+import { firestoreService } from '@/services/firestore'
 
 interface FileSystemProps {
   user: User | null
@@ -29,7 +29,7 @@ export default function FileSystem({ user }: FileSystemProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // 파일 타입 결정 함수
-  const getFileType = (fileName: string, fileType: string): 'csv' | 'excel' | 'image' | 'other' => {
+  const getFileType = (fileName: string): 'csv' | 'excel' | 'image' | 'other' => {
     const extension = fileName.split('.').pop()?.toLowerCase()
     
     if (extension === 'csv') return 'csv'
@@ -77,7 +77,7 @@ export default function FileSystem({ user }: FileSystemProps) {
         name: file.fileName,
         size: formatFileSize(file.fileSize),
         uploadDate: formatUploadDate(file.uploadedAt.toDate ? file.uploadedAt.toDate() : new Date(file.uploadedAt as any)),
-        type: getFileType(file.fileName, file.fileType),
+        type: getFileType(file.fileName),
         selected: false,
         fileUrl: file.fileUrl,
         originalSize: file.fileSize,
@@ -97,6 +97,7 @@ export default function FileSystem({ user }: FileSystemProps) {
   // 컴포넌트 마운트 시 파일 불러오기
   useEffect(() => {
     loadUserFiles()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   // 외부 클릭 시 메뉴 닫기

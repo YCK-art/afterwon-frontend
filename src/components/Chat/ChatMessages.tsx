@@ -30,7 +30,7 @@ const parseTable = (lines: string[], startIndex: number) => {
 
   // 헤더와 구분선 파싱
   const headerLine = tableLines[0]
-  const separatorLine = tableLines[1]
+  // const separatorLine = tableLines[1] // unused
   const dataLines = tableLines.slice(2)
 
   // 헤더 파싱
@@ -501,15 +501,15 @@ const FileInfoCard = ({ fileInfo }: { fileInfo: { filename: string; fileSize: nu
   }
 
   return (
-    <div className="mt-3 bg-gray-800 rounded-lg p-3 flex items-center gap-3 inline-flex max-w-fit">
+    <div className="mt-3 bg-orange-100 rounded-lg p-3 flex items-center gap-3 inline-flex max-w-fit">
       <div className="flex items-center justify-center">
         {getFileIcon(fileInfo.fileType, fileInfo.filename)}
       </div>
       <div className="flex-shrink-0">
-        <div className="text-white font-medium text-sm whitespace-nowrap">
+        <div className="text-black font-medium text-sm whitespace-nowrap">
           {fileInfo.filename}
         </div>
-        <div className="text-gray-400 text-xs whitespace-nowrap">
+        <div className="text-gray-700 text-xs whitespace-nowrap">
           {getFileTypeLabel(fileInfo.fileType)} - {formatFileSize(fileInfo.fileSize)}
         </div>
       </div>
@@ -523,7 +523,6 @@ const TypewriterMessage = ({
   insights,
   message,
   isLastMessage,
-  messageIndex,
   totalMessages
 }: {
   content: string;
@@ -611,6 +610,7 @@ interface ChatMessagesProps {
   uploadedFile?: any
   user: User | null
   onMessageUpdate?: (messageId: string, updates: Partial<Message>) => void
+  onTableChange?: (updatedData: { data: any[], columns: string[] }) => void
 }
 
 // Message Actions Component  
@@ -732,7 +732,7 @@ const MessageActions = ({ messageId, content, insights, isUserMessage = false, i
   )
 }
 
-export default function ChatMessages({ messages, isLoading, messagesEndRef, onFollowUpClick, onChartExpand, uploadedFile, user, onMessageUpdate }: ChatMessagesProps) {
+export default function ChatMessages({ messages, isLoading, messagesEndRef, onFollowUpClick, onChartExpand, user, onMessageUpdate, onTableChange }: ChatMessagesProps) {
   // 차트 색상 변경 핸들러
   const handleChartColorChange = async (messageId: string, colors: {[key: number]: string}) => {
     if (onMessageUpdate) {
@@ -825,7 +825,7 @@ export default function ChatMessages({ messages, isLoading, messagesEndRef, onFo
                       // 코드 실행 완료 후 답변을 업데이트
                       if (message.codeExecution?.output && onMessageUpdate) {
                         // 계산 결과를 더 자연스러운 답변으로 변환
-                        const result = message.codeExecution.result || message.codeExecution.output
+                        // const result = message.codeExecution.result || message.codeExecution.output
                         const answerText = `계산이 완료되었습니다.\n\n${message.codeExecution.output}`
 
                         onMessageUpdate(message.id, {
@@ -886,6 +886,7 @@ export default function ChatMessages({ messages, isLoading, messagesEndRef, onFo
                       data={message.tableData.data}
                       columns={message.tableData.columns}
                       filename={message.tableData.filename}
+                      onTableChange={onTableChange}
                     />
                   </div>
                 )}

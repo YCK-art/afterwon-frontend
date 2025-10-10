@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = 'http://localhost:8001'
 
 export interface FileUploadResponse {
   file_id: string
@@ -42,6 +42,10 @@ export interface UnifiedQuestionRequest {
   question: string
   file_id?: string | null
   conversation_history?: ConversationMessage[]
+  modified_data?: {
+    data: any[]
+    columns: string[]
+  } | null
 }
 
 export interface UnifiedQuestionResponse {
@@ -211,7 +215,7 @@ class ApiService {
 
   // WebSocket connection for real-time analysis
   createAnalysisWebSocket(): WebSocket {
-    return new WebSocket(`ws://localhost:8000/ws/analysis`)
+    return new WebSocket(`ws://localhost:8001/ws/analysis`)
   }
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -10,26 +10,27 @@ import {
   FiPlay,
   FiMenu,
   FiX,
-  FiDollarSign,
-  FiTrendingUp,
-  FiBarChart,
   FiChevronDown,
-  FiChevronUp,
-  FiMail,
-  FiUsers,
-  FiTarget,
-  FiLayers,
-  FiBookOpen,
-  FiLifeBuoy,
-  FiShield,
-  FiGlobe,
-  FiCheck,
-  FiActivity,
-  FiLock,
-  FiGrid,
-  FiFileText,
-  FiDatabase,
 } from "react-icons/fi";
+import {
+  DollarSign,
+  TrendingUp,
+  BarChart3,
+  Mail,
+  Users,
+  Target,
+  Layers,
+  BookOpen,
+  LifeBuoy,
+  Shield,
+  Globe,
+  Check,
+  Activity,
+  Lock,
+  Grid3x3,
+  FileText,
+  Database,
+} from "lucide-react";
 import { FaTwitter, FaInstagram } from "react-icons/fa";
 import LoginModal from "../Auth/LoginModal";
 import LoadingScreen from "../Auth/LoadingScreen";
@@ -84,12 +85,12 @@ export default function LandingPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoadingScreenVisible, setIsLoadingScreenVisible] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState("Finance");
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [_currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  // const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('EN');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -105,28 +106,28 @@ export default function LandingPage() {
     "/image/logo.png",
   ];
 
-  const formats = [
+  const formats = useMemo(() => [
     "Finance",
     "Marketing",
     "Product Team",
     "Consulting",
     "Research",
-  ];
+  ], []);
 
-  const reviews = [
-    {
-      text: "I feel like I've been riding a bike using AI tools and it seems like you've handed me a motorcycle.",
-      author: "Hedge Fund Portfolio Manager"
-    },
-    {
-      text: "This platform transformed our data analysis workflow completely. What used to take hours now takes minutes.",
-      author: "Senior Data Analyst"
-    },
-    {
-      text: "The insights we get from our financial data are incredible. It's like having a team of analysts at our fingertips.",
-      author: "Investment Director"
-    }
-  ];
+  // const reviews = [
+  //   {
+  //     text: "I feel like I've been riding a bike using AI tools and it seems like you've handed me a motorcycle.",
+  //     author: "Hedge Fund Portfolio Manager"
+  //   },
+  //   {
+  //     text: "This platform transformed our data analysis workflow completely. What used to take hours now takes minutes.",
+  //     author: "Senior Data Analyst"
+  //   },
+  //   {
+  //     text: "The insights we get from our financial data are incredible. It's like having a team of analysts at our fingertips.",
+  //     author: "Investment Director"
+  //   }
+  // ];
 
   // State for latest blog posts
   const [latestBlogs, setLatestBlogs] = useState<BlogPost[]>([]);
@@ -272,7 +273,7 @@ export default function LandingPage() {
           startProgressAndAutoSlide();
         } else {
           // Retry after a longer delay if ref is not ready
-          const retryTimer = setTimeout(() => {
+          setTimeout(() => {
             startProgressAndAutoSlide();
           }, 500);
         }
@@ -290,7 +291,7 @@ export default function LandingPage() {
         clearInterval(progressIntervalRef.current);
       }
     };
-  }, []);
+  }, [formats]);
 
   // Hero section image auto-slide effect
   useEffect(() => {
@@ -322,27 +323,27 @@ export default function LandingPage() {
   const getBlogIcon = (title: string) => {
     switch (title) {
       case 'AI for Financial Forecasting':
-        return <FiTrendingUp className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <TrendingUp className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'From Campaign Data to Customer Insights':
-        return <FiTarget className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Target className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Real-Time Data Processing Revolution':
-        return <FiActivity className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Activity className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Graph Neural Networks for Social Analysis':
-        return <FiUsers className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Users className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Time Series Forecasting with Transformers':
-        return <FiBarChart className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <BarChart3 className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Privacy-Preserving Analytics in Production':
-        return <FiLock className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Lock className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Multi-Modal Data Fusion Techniques':
-        return <FiGrid className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Grid3x3 className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Explainable AI for Transparency':
-        return <FiFileText className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <FileText className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Building Scalable Data Pipelines':
-        return <FiDatabase className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Database className="w-16 h-16 text-white" strokeWidth={1.5} />
       case 'Zero-Trust Security Architecture':
-        return <FiShield className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <Shield className="w-16 h-16 text-white" strokeWidth={1.5} />
       default:
-        return <FiBookOpen className="w-16 h-16 text-white" strokeWidth={1.5} />
+        return <BookOpen className="w-16 h-16 text-white" strokeWidth={1.5} />
     }
   }
 
@@ -544,17 +545,17 @@ export default function LandingPage() {
     }
   };
 
-  const handlePreviousReview = () => {
-    setCurrentReviewIndex((prevIndex) =>
-      prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
-    );
-  };
+  // const handlePreviousReview = () => {
+  //   setCurrentReviewIndex((prevIndex) =>
+  //     prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
+  //   );
+  // };
 
-  const handleNextReview = () => {
-    setCurrentReviewIndex((prevIndex) =>
-      (prevIndex + 1) % reviews.length
-    );
-  };
+  // const handleNextReview = () => {
+  //   setCurrentReviewIndex((prevIndex) =>
+  //     (prevIndex + 1) % reviews.length
+  //   );
+  // };
 
   return (
     <>
@@ -615,35 +616,35 @@ export default function LandingPage() {
                           const formatInfo = {
                             Finance: {
                               icon: (
-                                <FiDollarSign className="w-5 h-5 text-orange-500" />
+                                <DollarSign className="w-6 h-6 text-orange-500" strokeWidth={2} />
                               ),
                               description:
                                 "Transform complex financial data into insights",
                             },
                             Marketing: {
                               icon: (
-                                <FiTarget className="w-5 h-5 text-orange-500" />
+                                <Target className="w-6 h-6 text-orange-500" strokeWidth={2} />
                               ),
                               description:
                                 "Turn campaign data into marketing intelligence",
                             },
                             "Product Team": {
                               icon: (
-                                <FiUsers className="w-5 h-5 text-orange-500" />
+                                <Users className="w-6 h-6 text-orange-500" strokeWidth={2} />
                               ),
                               description:
                                 "Analyze product metrics and KPIs efficiently",
                             },
                             Consulting: {
                               icon: (
-                                <FiBarChart className="w-5 h-5 text-orange-500" />
+                                <BarChart3 className="w-6 h-6 text-orange-500" strokeWidth={2} />
                               ),
                               description:
                                 "Deliver data-driven solutions for clients",
                             },
                             Research: {
                               icon: (
-                                <FiLayers className="w-5 h-5 text-orange-500" />
+                                <Layers className="w-6 h-6 text-orange-500" strokeWidth={2} />
                               ),
                               description:
                                 "Convert research data into visual stories",
@@ -653,10 +654,12 @@ export default function LandingPage() {
                           return (
                             <Link
                               key={format}
-                              href={`#${format
-                                .toLowerCase()
-                                .replace(" ", "-")}`}
+                              href={format === "Finance" ? "/finance" : `#${format.toLowerCase().replace(" ", "-")}`}
                               onClick={(e) => {
+                                if (format === "Finance") {
+                                  // Let the default Link behavior handle navigation to /finance
+                                  return;
+                                }
                                 e.preventDefault();
                                 handleFormatClick(format);
                                 // Scroll to the format section
@@ -668,9 +671,9 @@ export default function LandingPage() {
                                   });
                                 }
                               }}
-                              className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
+                              className="flex items-center gap-4 px-5 py-4 h-20 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                             >
-                              <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                              <div className="flex-shrink-0 w-14 h-14 bg-orange-50 rounded-lg flex items-center justify-center">
                                 {
                                   formatInfo[format as keyof typeof formatInfo]
                                     ?.icon
@@ -678,13 +681,13 @@ export default function LandingPage() {
                               </div>
                               <div className="flex-grow">
                                 <div
-                                  className="font-semibold text-sm text-black mb-1"
-                                  style={{ fontFamily: "Arial, sans-serif" }}
+                                  className="font-semibold text-base text-black"
+                                  style={{ fontFamily: "Arial, sans-serif", marginBottom: "-2px" }}
                                 >
                                   {format}
                                 </div>
                                 <div
-                                  className="text-xs text-gray-600 leading-relaxed whitespace-nowrap"
+                                  className="text-sm text-gray-600 leading-relaxed whitespace-nowrap"
                                   style={{ fontFamily: "Arial, sans-serif" }}
                                 >
                                   {
@@ -724,20 +727,20 @@ export default function LandingPage() {
                       <div className="py-3">
                         <Link
                           href="/blog"
-                          className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
+                          className="flex items-center gap-4 px-5 py-4 h-20 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-                            <FiBookOpen className="w-5 h-5 text-orange-500" />
+                          <div className="flex-shrink-0 w-14 h-14 bg-orange-50 rounded-lg flex items-center justify-center">
+                            <BookOpen className="w-6 h-6 text-orange-500" strokeWidth={2} />
                           </div>
                           <div className="flex-grow">
                             <div
-                              className="font-semibold text-sm text-black mb-1"
-                              style={{ fontFamily: "Arial, sans-serif" }}
+                              className="font-semibold text-base text-black"
+                              style={{ fontFamily: "Arial, sans-serif", marginBottom: "-2px" }}
                             >
                               Blog
                             </div>
                             <div
-                              className="text-xs text-gray-600 leading-relaxed whitespace-nowrap"
+                              className="text-sm text-gray-600 leading-relaxed whitespace-nowrap"
                               style={{ fontFamily: "Arial, sans-serif" }}
                             >
                               Latest insights and updates from our team
@@ -746,45 +749,23 @@ export default function LandingPage() {
                         </Link>
                         <Link
                           href="/help"
-                          className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
+                          className="flex items-center gap-4 px-5 py-4 h-20 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-                            <FiLifeBuoy className="w-5 h-5 text-orange-500" />
+                          <div className="flex-shrink-0 w-14 h-14 bg-orange-50 rounded-lg flex items-center justify-center">
+                            <LifeBuoy className="w-6 h-6 text-orange-500" strokeWidth={2} />
                           </div>
                           <div className="flex-grow">
                             <div
-                              className="font-semibold text-sm text-black mb-1"
-                              style={{ fontFamily: "Arial, sans-serif" }}
+                              className="font-semibold text-base text-black"
+                              style={{ fontFamily: "Arial, sans-serif", marginBottom: "-2px" }}
                             >
                               Help Center
                             </div>
                             <div
-                              className="text-xs text-gray-600 leading-relaxed whitespace-nowrap"
+                              className="text-sm text-gray-600 leading-relaxed whitespace-nowrap"
                               style={{ fontFamily: "Arial, sans-serif" }}
                             >
                               Get support and find answers to your questions
-                            </div>
-                          </div>
-                        </Link>
-                        <Link
-                          href="/security"
-                          className="flex items-center gap-4 px-5 py-4 h-16 text-black hover:bg-gray-50 transition-all duration-200 mx-2 rounded-md"
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-                            <FiShield className="w-5 h-5 text-orange-500" />
-                          </div>
-                          <div className="flex-grow">
-                            <div
-                              className="font-semibold text-sm text-black mb-1"
-                              style={{ fontFamily: "Arial, sans-serif" }}
-                            >
-                              Security
-                            </div>
-                            <div
-                              className="text-xs text-gray-600 leading-relaxed whitespace-nowrap"
-                              style={{ fontFamily: "Arial, sans-serif" }}
-                            >
-                              Learn about our security measures and compliance
                             </div>
                           </div>
                         </Link>
@@ -816,7 +797,7 @@ export default function LandingPage() {
                     onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
                     className="p-2 rounded-full hover:bg-orange-100 transition-colors group"
                   >
-                    <FiGlobe className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                    <Globe className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" strokeWidth={2} />
                   </button>
 
                   {/* Language Dropdown */}
@@ -833,7 +814,7 @@ export default function LandingPage() {
                           <span className="text-sm font-medium text-gray-600">EN</span>
                           <span className="text-sm text-gray-700">English</span>
                         </div>
-                        {selectedLanguage === 'EN' && <FiCheck className="w-4 h-4 text-orange-500" />}
+                        {selectedLanguage === 'EN' && <Check className="w-4 h-4 text-orange-500" strokeWidth={2} />}
                       </button>
                       <button
                         onClick={() => {
@@ -846,7 +827,7 @@ export default function LandingPage() {
                           <span className="text-sm font-medium text-gray-600">KR</span>
                           <span className="text-sm text-gray-700">한국어</span>
                         </div>
-                        {selectedLanguage === 'KR' && <FiCheck className="w-4 h-4 text-orange-500" />}
+                        {selectedLanguage === 'KR' && <Check className="w-4 h-4 text-orange-500" strokeWidth={2} />}
                       </button>
                       <button
                         onClick={() => {
@@ -859,7 +840,7 @@ export default function LandingPage() {
                           <span className="text-sm font-medium text-gray-600">JA</span>
                           <span className="text-sm text-gray-700">日本語</span>
                         </div>
-                        {selectedLanguage === 'JA' && <FiCheck className="w-4 h-4 text-orange-500" />}
+                        {selectedLanguage === 'JA' && <Check className="w-4 h-4 text-orange-500" strokeWidth={2} />}
                       </button>
                     </div>
                   )}
@@ -1652,15 +1633,6 @@ export default function LandingPage() {
                     Help Center
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="/security"
-                    className="text-white/80 hover:text-white transition-colors"
-                    style={{ fontFamily: 'Arial, sans-serif' }}
-                  >
-                    Security
-                  </Link>
-                </li>
               </ul>
             </div>
 
@@ -1812,7 +1784,7 @@ export default function LandingPage() {
                   href="mailto:contact@afterwon.com"
                   className="text-white/80 hover:text-white transition-colors"
                 >
-                  <FiMail size={24} />
+                  <Mail size={24} strokeWidth={2} />
                 </Link>
                 </div>
               </div>

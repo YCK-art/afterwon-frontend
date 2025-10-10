@@ -17,7 +17,7 @@ export default function Settings({ user }: SettingsProps) {
   const [activeSection, setActiveSection] = useState<SettingsSection>('profile')
   const [selectedJob, setSelectedJob] = useState('')
   const [isLoadingJob, setIsLoadingJob] = useState(false)
-  const [jobError, setJobError] = useState<string | null>(null)
+  const [_jobError, setJobError] = useState<string | null>(null)
   const [isJobDropdownOpen, setIsJobDropdownOpen] = useState(false)
   const [isInterfaceLanguageDropdownOpen, setIsInterfaceLanguageDropdownOpen] = useState(false)
   const [selectedResponseLanguage, setSelectedResponseLanguage] = useState('')

@@ -23,7 +23,7 @@ interface PlotlyChartProps {
 
 export default function PlotlyChart({ data, height = 520, onTitleChange, onChartExpand, showTitleEditor = true, showControls = true, messageId, onColorChange, savedColors }: PlotlyChartProps) {
   const chartRef = useRef<HTMLDivElement>(null)
-  const [isEditing, setIsEditing] = useState(false)
+  // const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState('')
   const [currentTitle, setCurrentTitle] = useState('')
   const [showColorPicker, setShowColorPicker] = useState(false)
@@ -395,6 +395,7 @@ export default function PlotlyChart({ data, height = 520, onTitleChange, onChart
     }
 
     loadPlotly()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, showTitleEditor])
 
   if (!data) {
@@ -465,7 +466,7 @@ export default function PlotlyChart({ data, height = 520, onTitleChange, onChart
 
       {/* Floating Chart Controls - 조건부 렌더링 */}
       {data && showControls && (
-        <div className="absolute top-16 right-4 flex gap-2 z-50">
+        <div className="absolute top-4 right-4 flex gap-2 z-50">
           <div className="relative z-50">
             <button
               onClick={() => setShowColorPicker(!showColorPicker)}

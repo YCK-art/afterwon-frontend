@@ -126,20 +126,20 @@ export default function BlogPage() {
     setVisibleCount(prev => prev + 9)
   }
 
-  const getSortLabel = () => {
-    switch (sortOrder) {
-      case 'newest':
-        return 'Newest First'
-      case 'oldest':
-        return 'Oldest First'
-      case 'a-z':
-        return 'A-Z'
-      case 'z-a':
-        return 'Z-A'
-      default:
-        return 'Sort'
-    }
-  }
+  // const getSortLabel = () => {
+  //   switch (sortOrder) {
+  //     case 'newest':
+  //       return 'Newest First'
+  //     case 'oldest':
+  //       return 'Oldest First'
+  //     case 'a-z':
+  //       return 'A-Z'
+  //     case 'z-a':
+  //       return 'Z-A'
+  //     default:
+  //       return 'Sort'
+  //   }
+  // }
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
